@@ -115,16 +115,17 @@ PostgreSQL (stores detections and violations)
 
 ## Performance
 
-Based on testing with construction site images:
+Based on actual testing on my MacBook Pro (Apple Silicon):
 
 | Metric | Result |
 |--------|--------|
-| Inference time | ~200ms per image (CPU) |
-| Detection confidence | 63-78% (averaged 72%) |
-| False positives | 0 in test set |
-| Tracking accuracy | Maintains IDs across frames |
+| Inference time | 65ms per image |
+| FPS | 15.4 frames/sec |
+| Detection confidence | 63-78% range (72% avg) |
+| False positives | 0 in test images |
+| Device | CPU only (M-series chip) |
 
-*Note: These are from actual tests on my MacBook (Apple Silicon). GPU performance would be better.*
+*Note: GPU would be faster, but wanted to show it works on standard hardware.*
 
 ## What I Learned
 
