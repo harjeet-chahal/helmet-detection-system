@@ -1,174 +1,176 @@
-# Advanced Helmet Detection System with Multi-Modal Analysis
+# Helmet Detection System
 
-## 🎯 Project Overview
+A computer vision system that detects construction workers and whether they're wearing safety helmets. Built this to explore real-time object detection and learn about production ML pipelines.
 
-A production-ready helmet detection system that combines computer vision, temporal analysis, and risk assessment for construction safety monitoring. This system goes beyond simple object detection to provide actionable insights for safety compliance.
+![API Documentation](screenshots/01_api_documentation.png)
 
-## 🚀 Novel Features
+## What It Does
 
-### 1. **Temporal Violation Tracking**
-- Tracks individual workers across frames using DeepSORT
-- Identifies persistent violators vs. one-time incidents
-- Generates compliance reports per worker ID
+The system takes images or video of construction sites and:
+- Detects people in the frame
+- Identifies if they're wearing helmets
+- Tracks individuals across video frames
+- Calculates risk scores based on multiple factors (location, duration, history)
 
-### 2. **Risk Severity Assessment**
-- Multi-factor risk scoring based on:
-  - Proximity to hazardous zones (scaffolding, heavy machinery)
-  - Duration of violation
-  - Number of workers in frame
-  - Historical compliance patterns
+### Live Detection Example
 
-### 3. **Smart Alert System**
-- Graduated alert levels (Warning → Critical → Emergency)
-- Alert fatigue reduction through intelligent filtering
-- Integration-ready for SMS/email/dashboard notifications
+![Detection Results](screenshots/02_detection_result.png)
 
-### 4. **Contextual Scene Understanding**
-- Identifies high-risk zones (excavation, roofing, heavy equipment)
-- Adjusts detection sensitivity based on scene context
-- Validates helmet requirements by work area
+In this test, it detected 7 workers - all wearing helmets with 63-78% confidence.
 
-### 5. **Multi-Camera Fusion**
-- Aggregates detections across multiple camera feeds
-- Eliminates duplicate violations from overlapping views
-- Creates site-wide compliance heatmaps
+## Why I Built This
 
-## 📊 System Architecture
+Wanted to go beyond tutorial projects and build something that could actually work in production. This meant dealing with:
+- Real-time video processing
+- Keeping track of people across frames (not just detecting them once)
+- Designing a system that doesn't just say "detected/not detected" but provides context
+- Making it deployable with Docker and proper APIs
 
+## The Interesting Part: Risk Assessment
+
+Most helmet detection projects just detect and alert. I added a risk scoring system that considers:
 ```
-Input Layer:
-├── Video Streams (RTSP/WebRTC/File)
-├── Camera Metadata (location, FOV, calibration)
-└── Zone Configuration (hazard areas, restricted zones)
-
-Processing Pipeline:
-├── YOLOv8 Detection (helmet/no-helmet/person)
-├── DeepSORT Tracking (persistent IDs)
-├── Scene Understanding (YOLOv8-Seg for zones)
-├── Risk Assessment Engine
-└── Temporal Analysis
-
-Output Layer:
-├── Real-time Dashboard (React + WebSocket)
-├── Alert System (multi-channel)
-├── Analytics Database (PostgreSQL + TimescaleDB)
-├── Report Generation (PDF/Excel)
-└── API (FastAPI with authentication)
+Risk Score = 
+    35% × How close to dangerous areas (scaffolding, machinery)
+  + 25% × How long the violation lasts
+  + 20% × How many people are around (more people = higher impact)
+  + 20% × Person's past compliance
 ```
 
-## 🔧 Technical Stack
+This reduces false positives significantly - you don't want alerts every time someone briefly lifts their helmet.
 
-**Computer Vision:**
-- YOLOv8 (detection + segmentation)
-- DeepSORT (multi-object tracking)
-- OpenCV (video processing)
+## Tech Stack
+
+**Core Detection:**
+- YOLOv8 for object detection
+- DeepSORT for tracking people across frames
+- OpenCV for video processing
 
 **Backend:**
-- FastAPI (REST API)
-- PostgreSQL + TimescaleDB (time-series data)
-- Redis (caching and real-time queues)
-- Celery (async task processing)
+- FastAPI for the REST API
+- PostgreSQL + TimescaleDB (optimized for time-series data)
+- Redis for caching
+- Celery for background tasks
 
-**Frontend:**
-- React + TypeScript
-- WebSocket (real-time updates)
-- Chart.js (analytics visualization)
-- Leaflet.js (site mapping)
+**Deployment:**
+- Docker Compose for all services
+- Prometheus + Grafana for monitoring
 
-**ML/AI:**
-- PyTorch (model inference)
-- ONNX Runtime (optimized deployment)
-- TensorRT (GPU acceleration)
+## Quick Start
+```bash
+# Clone
+git clone https://github.com/harjeet-chahal/helmet-detection-system.git
+cd helmet-detection-system
 
-**Infrastructure:**
-- Docker + Docker Compose
-- Nginx (reverse proxy)
-- Prometheus + Grafana (monitoring)
-- GitHub Actions (CI/CD)
+# Create environment file
+cp .env.example .env
 
-## 📈 Performance Metrics
+# Start everything
+docker-compose up -d
 
-- **Detection Accuracy:** 94.3% mAP@50 on custom construction dataset
-- **Tracking Accuracy:** 89.7% MOTA (Multiple Object Tracking Accuracy)
-- **Inference Speed:** 45 FPS on RTX 3060 (1080p), 22 FPS on CPU
-- **False Positive Rate:** <3% with context validation
-- **System Latency:** <200ms end-to-end (detection to alert)
-
-## 🎓 Learning Outcomes & Interview Points
-
-1. **Production ML System Design:** End-to-end pipeline from data to deployment
-2. **Real-time Computer Vision:** Handling video streams with low latency
-3. **Multi-object Tracking:** Implementing and optimizing DeepSORT
-4. **Database Design:** Time-series optimization for IoT/vision data
-5. **System Architecture:** Microservices, async processing, scalability
-6. **API Design:** RESTful best practices with authentication
-7. **Frontend Integration:** Real-time dashboards with WebSocket
-8. **DevOps:** Containerization, monitoring, CI/CD
-
-## 📂 Project Structure
-
-```
-helmet-detection-system/
-├── data/
-│   ├── raw/                    # Original videos/images
-│   ├── processed/              # Annotated datasets
-│   └── models/                 # Trained model weights
-├── src/
-│   ├── detection/              # Core detection module
-│   │   ├── yolo_detector.py
-│   │   ├── tracker.py          # DeepSORT implementation
-│   │   └── scene_analyzer.py
-│   ├── risk_assessment/        # Novel risk scoring
-│   │   ├── risk_engine.py
-│   │   ├── zone_manager.py
-│   │   └── violation_tracker.py
-│   ├── api/                    # FastAPI application
-│   │   ├── main.py
-│   │   ├── routes/
-│   │   └── websocket.py
-│   ├── database/               # DB models and migrations
-│   │   ├── models.py
-│   │   └── migrations/
-│   └── frontend/               # React dashboard
-│       ├── src/
-│       └── public/
-├── notebooks/                  # Jupyter notebooks
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_model_training.ipynb
-│   └── 03_performance_analysis.ipynb
-├── tests/                      # Unit and integration tests
-├── deployment/
-│   ├── docker/
-│   ├── kubernetes/
-│   └── monitoring/
-├── docs/                       # Documentation
-└── scripts/                    # Utility scripts
+# Access API docs
+open http://localhost:8000/docs
 ```
 
-## 🚦 Getting Started
+The API will be at `http://localhost:8000/docs` - you can upload images directly there.
 
-Detailed setup instructions coming in SETUP.md...
+## Project Structure
+```
+src/
+├── detection/
+│   ├── yolo_detector.py    # YOLOv8 wrapper with custom features
+│   └── tracker.py          # DeepSORT tracking implementation
+├── risk_assessment/
+│   └── risk_engine.py      # Risk scoring algorithm
+├── api/
+│   └── main.py             # FastAPI server
+└── database/
+    └── models.py           # Database schema
+```
 
-## 📊 Dataset
+## System Architecture
+```
+Video/Image Input
+    ↓
+YOLOv8 Detection (finds people and helmets)
+    ↓
+DeepSORT Tracking (assigns IDs, tracks movement)
+    ↓
+Risk Assessment (calculates scores)
+    ↓
+FastAPI (REST endpoints + WebSocket)
+    ↓
+PostgreSQL (stores detections and violations)
+```
 
-We'll use a combination of:
-1. **Safety Helmet Detection Dataset** (Kaggle)
-2. **Construction Site Dataset** (Roboflow)
-3. **Custom annotated footage** (50+ construction site videos)
+## API Endpoints
 
-Total: ~15,000 images with bounding boxes and segmentation masks
+- `POST /api/detect/image` - Upload an image, get detections
+- `POST /api/detect/video` - Process a video file
+- `GET /api/statistics` - System stats
+- `POST /api/zones/add` - Define hazardous zones
+- `WS /ws/stream` - Real-time video streaming
 
-## 🎯 Future Enhancements
+![System Health](screenshots/03_system_health.png)
 
-1. **Edge Deployment:** Optimize for Jetson Nano/Coral TPU
-2. **Behavior Analysis:** Detect unsafe actions beyond helmet compliance
-3. **Predictive Analytics:** ML models for incident prediction
-4. **AR Integration:** Real-time overlay for site supervisors
-5. **Voice Alerts:** On-site audio warnings for workers
+## Performance
+
+Based on testing with construction site images:
+
+| Metric | Result |
+|--------|--------|
+| Inference time | ~200ms per image (CPU) |
+| Detection confidence | 63-78% (averaged 72%) |
+| False positives | 0 in test set |
+| Tracking accuracy | Maintains IDs across frames |
+
+*Note: These are from actual tests on my MacBook (Apple Silicon). GPU performance would be better.*
+
+## What I Learned
+
+1. **Production ML is different from notebooks** - Had to think about API design, error handling, monitoring
+2. **Tracking is hard** - Keeping consistent IDs across frames requires careful tuning
+3. **Context matters** - A simple detector + smart logic beats a complex model with naive alerting
+4. **Docker makes deployment way easier** - One command to spin up the entire stack
+5. **Time-series databases** - TimescaleDB's optimizations actually make a difference with lots of detections
+
+## Things I'd Improve
+
+- Train a custom model on construction-specific data (currently using pretrained YOLOv8)
+- Add behavior analysis (unsafe postures, proximity to danger)
+- Better frontend dashboard (right now it's just the API)
+- Deploy to cloud with auto-scaling
+- Add camera calibration for better distance/proximity calculations
+
+## Running Tests
+```bash
+# Test the core components
+python3 scripts/demo_test.py
+
+# Process a video
+python3 scripts/process_video.py --video your_video.mp4
+
+# Check system status
+curl http://localhost:8000/health
+```
+
+## Documentation
+
+- [SETUP.md](SETUP.md) - Detailed setup instructions
+- [ARCHITECTURE.md](ARCHITECTURE.md) - System design details
+- [QUICKSTART.md](QUICKSTART.md) - Get running in 10 minutes
+
+## Credits
+
+Built using:
+- [YOLOv8](https://github.com/ultralytics/ultralytics) by Ultralytics
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [DeepSORT](https://github.com/nwojke/deep_sort) algorithm
+
+## License
+
+MIT
 
 ---
 
-**Author:** Harjeet Singh Chahal  
-**Institution:** Rutgers University  
-**Target:** Summer 2026 ML Engineer Internship  
-**Contact:** [Your Email/LinkedIn]
+**Harjeet Singh Chahal** | MSCS @ Rutgers University
