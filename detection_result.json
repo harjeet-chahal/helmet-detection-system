@@ -1,0 +1,94 @@
+{
+    "frame_id": 0,
+    "timestamp": 1764099187.369737,
+    "detections": [
+        {
+            "bbox": [
+                249,
+                344,
+                301,
+                466
+            ],
+            "confidence": 0.7858645915985107,
+            "class_name": "helmet",
+            "track_id": null,
+            "risk_score": 0.0
+        },
+        {
+            "bbox": [
+                547,
+                286,
+                594,
+                386
+            ],
+            "confidence": 0.7764089703559875,
+            "class_name": "helmet",
+            "track_id": null,
+            "risk_score": 0.0
+        },
+        {
+            "bbox": [
+                377,
+                331,
+                417,
+                435
+            ],
+            "confidence": 0.7339624762535095,
+            "class_name": "helmet",
+            "track_id": null,
+            "risk_score": 0.0
+        },
+        {
+            "bbox": [
+                432,
+                320,
+                460,
+                423
+            ],
+            "confidence": 0.7282597422599792,
+            "class_name": "helmet",
+            "track_id": null,
+            "risk_score": 0.0
+        },
+        {
+            "bbox": [
+                479,
+                310,
+                510,
+                412
+            ],
+            "confidence": 0.703842043876648,
+            "class_name": "helmet",
+            "track_id": null,
+            "risk_score": 0.0
+        },
+        {
+            "bbox": [
+                334,
+                338,
+                366,
+                439
+            ],
+            "confidence": 0.6667889356613159,
+            "class_name": "helmet",
+            "track_id": null,
+            "risk_score": 0.0
+        },
+        {
+            "bbox": [
+                515,
+                299,
+                552,
+                404
+            ],
+            "confidence": 0.6335830688476562,
+            "class_name": "helmet",
+            "track_id": null,
+            "risk_score": 0.0
+        }
+    ],
+    "violations_count": 0,
+    "total_workers": 7,
+    "overall_risk": 0.0,
+    "alert_level": "info"
+}
